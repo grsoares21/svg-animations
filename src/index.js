@@ -1,5 +1,3 @@
-const TWEEN = require("@tweenjs/tween.js");
-
 const w = 500;
 const h = 500;
 const padding = 30;
@@ -60,7 +58,7 @@ let second = 0;
 
 const pointsX = {
   first,
-  second
+  second,
 };
 
 const firstPoint = svg
@@ -85,16 +83,11 @@ var tween = new TWEEN.Tween(pointsX) // Create a new tween that modifies 'coords
   .to({ first: -2.5, second: -2.5 }, 1000) // Move to (300, 200) in 1 second.
   .easing(TWEEN.Easing.Quadratic.Out) // Use an easing function to make the animation smooth.
   .onUpdate(() => {
-    firstPoint
-      .attr("cx", xScale(pointsX.first))
-      .attr("cy", yScale(applyFunc(pointsX.first)));
+    firstPoint.attr("cx", xScale(pointsX.first)).attr("cy", yScale(applyFunc(pointsX.first)));
 
-    secondPoint
-      .attr("cx", xScale(pointsX.second))
-      .attr("cy", yScale(applyFunc(pointsX.second)));
+    secondPoint.attr("cx", xScale(pointsX.second)).attr("cy", yScale(applyFunc(pointsX.second)));
   });
 
-window.startAnimation = () => {
-  console.log("yahh");
+function startAnimation() {
   tween.start();
-};
+}
