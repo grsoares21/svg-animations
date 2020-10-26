@@ -61,31 +61,63 @@ const pointsX = {
   second,
 };
 
-const firstPoint = svg
-  .append("circle")
-  .attr("cx", xScale(pointsX.first))
-  .attr("cy", yScale(applyFunc(pointsX.first)))
-  .attr("r", 4);
+let x1 = xScale(pointsX.first);
+let x2 = xScale(pointsX.second);
+let y1 = yScale(applyFunc(pointsX.first));
+let y2 = yScale(applyFunc(pointsX.second));
 
-const secondPoint = svg
-  .append("circle")
-  .attr("cx", xScale(pointsX.second))
-  .attr("cy", yScale(applyFunc(pointsX.second)))
-  .attr("r", 4);
+let angle = (Math.atan((x2 - x1) / (y2 - y1)) * 180) / Math.PI;
+
+let xMiddle = (x1 + x2) / 2;
+let yMiddle = (y1 + y2) / 2;
+
+const firstPoint = svg.append("circle").attr("cx", x1).attr("cy", y1).attr("r", 4);
+
+const secondPoint = svg.append("circle").attr("cx", x2).attr("cy", y2).attr("r", 4);
+//const middlePoint = svg.append("circle").attr("cx", xMiddle).attr("cy", yMiddle).attr("r", 4).attr("fill", "red");
+
+const line = svg
+  .append("line")
+  .attr("x1", xMiddle - 500)
+  .attr("x2", xMiddle + 500)
+  .attr("y1", yMiddle)
+  .attr("y2", yMiddle)
+  .attr("transform", `translate(${xMiddle} ${yMiddle}) rotate(${angle}) translate(${-xMiddle} ${-yMiddle})`)
+  .attr("stroke", "black")
+  .attr("stroke-width", 3);
 
 function animate(time) {
   requestAnimationFrame(animate);
   TWEEN.update(time);
 }
+
 requestAnimationFrame(animate);
 
 var tween = new TWEEN.Tween(pointsX) // Create a new tween that modifies 'coords'.
-  .to({ first: -2.5, second: -2.5 }, 1000) // Move to (300, 200) in 1 second.
+  .to({ first: 5.4999, second: 5.5001 }, 1000) // Move to (300, 200) in 1 second.
   .easing(TWEEN.Easing.Quadratic.Out) // Use an easing function to make the animation smooth.
   .onUpdate(() => {
-    firstPoint.attr("cx", xScale(pointsX.first)).attr("cy", yScale(applyFunc(pointsX.first)));
+    x1 = xScale(pointsX.first);
+    x2 = xScale(pointsX.second);
+    y1 = yScale(applyFunc(pointsX.first));
+    y2 = yScale(applyFunc(pointsX.second));
 
-    secondPoint.attr("cx", xScale(pointsX.second)).attr("cy", yScale(applyFunc(pointsX.second)));
+    angle = (Math.atan((x2 - x1) / (y2 - y1)) * 180) / Math.PI;
+
+    xMiddle = (x1 + x2) / 2;
+    yMiddle = (y1 + y2) / 2;
+
+    firstPoint.attr("cx", x1).attr("cy", y1);
+    secondPoint.attr("cx", x2).attr("cy", y2);
+
+    //middlePoint.attr("cx", xMiddle).attr("cy", yMiddle);
+
+    line
+      .attr("x1", xMiddle - 500)
+      .attr("x2", xMiddle + 500)
+      .attr("y1", yMiddle)
+      .attr("y2", yMiddle)
+      .attr("transform", `translate(${xMiddle} ${yMiddle}) rotate(${angle}) translate(${-xMiddle} ${-yMiddle})`);
   });
 
 function startAnimation() {
