@@ -26,7 +26,7 @@ let xTemp, yTemp;
 let datasetFunc = [];
 
 const applyFunc = (x) => {
-  return -(x ** 2) / 10 + 4;
+  return Math.sin(x);
 };
 
 for (let i = -pointNum; i <= pointNum; i++) {
@@ -53,8 +53,8 @@ svg
   .attr("stroke-width", 3)
   .attr("d", lineFunc);
 
-let first = -5;
-let second = 0;
+let first = -2;
+let second = 8;
 
 const pointsX = {
   first,
@@ -82,7 +82,7 @@ const line = svg
   .attr("x2", xMiddle + 500)
   .attr("y1", yMiddle)
   .attr("y2", yMiddle)
-  .attr("transform", `translate(${xMiddle} ${yMiddle}) rotate(${angle}) translate(${-xMiddle} ${-yMiddle})`)
+  .attr("transform", `translate(${xMiddle} ${yMiddle}) rotate(${90 - angle}) translate(${-xMiddle} ${-yMiddle})`)
   .attr("stroke", "black")
   .attr("stroke-width", 3);
 
@@ -94,8 +94,8 @@ function animate(time) {
 requestAnimationFrame(animate);
 
 var tween = new TWEEN.Tween(pointsX) // Create a new tween that modifies 'coords'.
-  .to({ first: 5.4999, second: 5.5001 }, 1000) // Move to (300, 200) in 1 second.
-  .easing(TWEEN.Easing.Quadratic.Out) // Use an easing function to make the animation smooth.
+  .to({ first: 2.999, second: 3.0001 }, 1000) // Move to (300, 200) in 1 second.
+  .easing(TWEEN.Easing.Linear.None) // Use an easing function to make the animation smooth.
   .onUpdate(() => {
     x1 = xScale(pointsX.first);
     x2 = xScale(pointsX.second);
@@ -117,7 +117,7 @@ var tween = new TWEEN.Tween(pointsX) // Create a new tween that modifies 'coords
       .attr("x2", xMiddle + 500)
       .attr("y1", yMiddle)
       .attr("y2", yMiddle)
-      .attr("transform", `translate(${xMiddle} ${yMiddle}) rotate(${angle}) translate(${-xMiddle} ${-yMiddle})`);
+      .attr("transform", `translate(${xMiddle} ${yMiddle}) rotate(${90 - angle}) translate(${-xMiddle} ${-yMiddle})`);
   });
 
 function startAnimation() {
