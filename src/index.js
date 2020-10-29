@@ -26,7 +26,10 @@ let xTemp, yTemp;
 let datasetFunc = [];
 
 const applyFunc = (x) => {
-  return Math.sin(x);
+  return -(x ** 2) / 8 + 4;
+  //Math.sin(x);
+  //-(x ** 2) / 8 + 4;
+  // (x ** 2) = 72
 };
 
 for (let i = -pointNum; i <= pointNum; i++) {
@@ -72,9 +75,7 @@ let xMiddle = (x1 + x2) / 2;
 let yMiddle = (y1 + y2) / 2;
 
 const firstPoint = svg.append("circle").attr("cx", x1).attr("cy", y1).attr("r", 4);
-
 const secondPoint = svg.append("circle").attr("cx", x2).attr("cy", y2).attr("r", 4);
-//const middlePoint = svg.append("circle").attr("cx", xMiddle).attr("cy", yMiddle).attr("r", 4).attr("fill", "red");
 
 const line = svg
   .append("line")
@@ -86,6 +87,43 @@ const line = svg
   .attr("stroke", "black")
   .attr("stroke-width", 3);
 
+let rectWidth = 25;
+let rectSize = { rectWidth };
+
+let minRectX = -10;
+let maxRectX = 10;
+
+let currentRects = [];
+
+svg
+  .append("line")
+  .attr("x1", 0)
+  .attr("x2", 500)
+  .attr("y1", yScale(0))
+  .attr("y2", yScale(0))
+  .attr("stroke", "black")
+  .attr("stroke-width", "3");
+
+const updateIntegralRects = () => {
+  for (let rectFirstX = minRectX; rectFirstX <= maxRectX; rectFirstX += rectSize.rectWidth) {
+    const y = applyFunc(rectFirstX);
+
+    let rect = svg
+      .append("rect")
+      .attr("x", xScale(rectFirstX))
+      .attr("y", yScale(y >= 0 ? y : 0))
+      .attr("fill", "none")
+      .attr("stroke", "black")
+      .attr("stroke-width", 3)
+      .attr("height", Math.abs(yScale(Math.abs(y)) - yScale(0)))
+      .attr("width", xScale(rectFirstX + rectSize.rectWidth) - xScale(rectFirstX));
+
+    currentRects.push(rect);
+  }
+};
+
+updateIntegralRects();
+
 function animate(time) {
   requestAnimationFrame(animate);
   TWEEN.update(time);
@@ -93,8 +131,8 @@ function animate(time) {
 
 requestAnimationFrame(animate);
 
-var tween = new TWEEN.Tween(pointsX) // Create a new tween that modifies 'coords'.
-  .to({ first: 2.999, second: 3.0001 }, 1000) // Move to (300, 200) in 1 second.
+var derivativeTween = new TWEEN.Tween(pointsX) // Create a new tween that modifies 'coords'.
+  .to({ first: 2.999, second: 3.0001 }, 15000) // Move to (300, 200) in 1 second.
   .easing(TWEEN.Easing.Linear.None) // Use an easing function to make the animation smooth.
   .onUpdate(() => {
     x1 = xScale(pointsX.first);
@@ -110,8 +148,6 @@ var tween = new TWEEN.Tween(pointsX) // Create a new tween that modifies 'coords
     firstPoint.attr("cx", x1).attr("cy", y1);
     secondPoint.attr("cx", x2).attr("cy", y2);
 
-    //middlePoint.attr("cx", xMiddle).attr("cy", yMiddle);
-
     line
       .attr("x1", xMiddle - 500)
       .attr("x2", xMiddle + 500)
@@ -120,6 +156,17 @@ var tween = new TWEEN.Tween(pointsX) // Create a new tween that modifies 'coords
       .attr("transform", `translate(${xMiddle} ${yMiddle}) rotate(${90 - angle}) translate(${-xMiddle} ${-yMiddle})`);
   });
 
+var integralTween = new TWEEN.Tween(rectSize) // Create a new tween that modifies 'coords'.
+  .to({ rectWidth: 0.15 }, 15000) // Move to (300, 200) in 1 second.
+  .easing(TWEEN.Easing.Quintic.Out) // Use an easing function to make the animation smooth.
+  .onUpdate(() => {
+    currentRects.forEach((rect) => rect.remove());
+    currentRects = [];
+
+    updateIntegralRects();
+  });
+
 function startAnimation() {
-  tween.start();
+  derivativeTween.start();
+  integralTween.start();
 }
