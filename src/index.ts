@@ -1,3 +1,6 @@
+import TWEEN from '@tweenjs/tween.js';
+import * as d3 from 'd3';
+
 const w = 500;
 const h = 500;
 const padding = 30;
@@ -166,7 +169,7 @@ var integralTween = new TWEEN.Tween(rectSize) // Create a new tween that modifie
     updateIntegralRects();
   });
 
-function startAnimation() {
+export function startAnimation() {
   derivativeTween.start();
   integralTween.start();
 }
